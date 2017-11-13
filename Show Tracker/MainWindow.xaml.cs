@@ -48,10 +48,41 @@ namespace Show_Tracker
             // create list of shows
             shows = new List<TvShow>();
 
+            // Load Data from file
+            LoadData();
+
             // Bind shows to listbox
             showList.ItemsSource = shows;
 
 
+        }
+
+        private void LoadData()
+        {
+            var directory = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+
+            if (File.Exists(System.IO.Path.Combine(directory, "ShowTracker", "data.json")))
+            {
+                using (StreamReader file = File.OpenText(System.IO.Path.Combine(directory, "ShowTracker", "data.json")))
+                {
+                    var jsonString = file.ReadToEnd();
+                    shows = JsonConvert.DeserializeObject<List<TvShow>>(jsonString);
+                }
+            }
+        }
+
+        private void SaveData()
+        {
+            var directory = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+
+            Directory.CreateDirectory(System.IO.Path.Combine(directory, "ShowTracker"));
+
+            using (StreamWriter file = File.CreateText(System.IO.Path.Combine(directory, "ShowTracker", "data.json")))
+            {
+                JsonSerializer serializer = new JsonSerializer();
+                //serialize object directly into file stream
+                serializer.Serialize(file, shows);
+            }
         }
 
         private async void AddShowButton_Click(object sender, RoutedEventArgs e)
@@ -65,6 +96,9 @@ namespace Show_Tracker
             showList.Items.Refresh();
             //Set the selected item in listbox
             showList.SelectedItem = show;
+
+            //Clear text in addbox
+            addShowText.Text = "";
 
 
         }
@@ -161,7 +195,12 @@ namespace Show_Tracker
                 shows.Remove(tempShow);
                 showList.Items.Refresh();
             }
-        } 
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            SaveData();
+        }
     }
 
     public class TvShowResultsQuery

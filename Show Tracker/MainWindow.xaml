@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Show_Tracker"
         mc:Ignorable="d"
-        Title="Show Tracker" Height="515.359" Width="768.939" SizeToContent="WidthAndHeight" WindowStartupLocation="CenterScreen">
+        Title="Show Tracker" Height="515.359" Width="768.939" SizeToContent="WidthAndHeight" WindowStartupLocation="CenterScreen" Closing="Window_Closing">
 
 
 
