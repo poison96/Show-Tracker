@@ -57,10 +57,13 @@ namespace Show_Tracker
 
         }
 
+        //Loads a list of tvshows from a json file
         private void LoadData()
         {
+            //Gets directory where file is located
             var directory = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
 
+            //If file exists, open and read the file and deserialize JSON into shows
             if (File.Exists(System.IO.Path.Combine(directory, "ShowTracker", "data.json")))
             {
                 using (StreamReader file = File.OpenText(System.IO.Path.Combine(directory, "ShowTracker", "data.json")))
@@ -71,10 +74,13 @@ namespace Show_Tracker
             }
         }
 
+        //Saves a list of tvshows to a json file
         private void SaveData()
         {
+            //Gets directory where file will be saved
             var directory = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
 
+            //If directory doesn't exist, create it
             Directory.CreateDirectory(System.IO.Path.Combine(directory, "ShowTracker"));
 
             using (StreamWriter file = File.CreateText(System.IO.Path.Combine(directory, "ShowTracker", "data.json")))
@@ -117,6 +123,7 @@ namespace Show_Tracker
 
         private void showList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            //When the selection is change for showList, Update all the fields for displaying information about the tv show
             if(shows.Count >= 1)
             {
                 selectedShow = showList.SelectedItem as TvShow;
@@ -129,7 +136,7 @@ namespace Show_Tracker
 
                 showPoster.Source = new BitmapImage(new Uri(api_image_url + selectedShow.Poster_path));
             }
-            else
+            else // Or clear all information when there is nothing to select
             {
                 NameText.Text = "No TV Show Selected";
                 FirstAirDate.Text = "";
@@ -141,6 +148,7 @@ namespace Show_Tracker
             
         }
 
+        // Ability to press Enter while in textbox to add tvshow
         private void addShowText_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
@@ -149,6 +157,7 @@ namespace Show_Tracker
             }
         }
 
+        //Updates the season you are up to
         private void SeasonText_TextChanged(object sender, TextChangedEventArgs e)
         {
             if(selectedShow != null)
@@ -161,12 +170,14 @@ namespace Show_Tracker
             }           
         }
 
+        //Prevent anything other than numbers to be entered
         private void SeasonText_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
             if (!char.IsDigit(e.Text, e.Text.Length - 1))
                 e.Handled = true;
         }
 
+        //Updates the epsiode you are up to
         private void EpisodeText_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (selectedShow != null)
@@ -179,12 +190,14 @@ namespace Show_Tracker
             }
         }
 
+        //Prevent anything other than numbers to be entered
         private void EpisodeText_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
             if (!char.IsDigit(e.Text, e.Text.Length - 1))
                 e.Handled = true;
         }
 
+        // Remove show from list and shows list
         private void removeShowButton_Click(object sender, RoutedEventArgs e)
         {
             TvShow tempShow = showList.SelectedItem as TvShow;
@@ -197,12 +210,14 @@ namespace Show_Tracker
             }
         }
 
+        // When program closes, save the data
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             SaveData();
         }
     }
 
+    //Class for the response from the API
     public class TvShowResultsQuery
     {
         public TvShowResultsQuery()
@@ -215,6 +230,7 @@ namespace Show_Tracker
         public List<TvShow> results { get; set; } 
     }
 
+    //Class that stores all the information required about a tv show
     public class TvShow
     {
         public TvShow()
@@ -237,4 +253,6 @@ namespace Show_Tracker
         public int CurrentSeason { get; set; }
         public int CurrentEpisode { get; set; }
     }
+
+
 }
